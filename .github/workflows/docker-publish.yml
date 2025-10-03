@@ -101,6 +101,11 @@ jobs:
           fi
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "Package version: $VERSION"
+          
+          # Set lowercase repository name for Docker
+          REPO_LOWER=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+          echo "repository=$REPO_LOWER" >> $GITHUB_OUTPUT
+          echo "Repository (lowercase): $REPO_LOWER"
 
       - name: Update version in control file
         run: |
@@ -109,9 +114,11 @@ jobs:
       - name: Wait for image to be available
         run: |
           echo "Waiting for Docker image to be available..."
+          REPO_LOWER=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+          echo "Pulling from: ghcr.io/${REPO_LOWER}:latest"
           sleep 10
           for i in {1..30}; do
-            if docker pull ghcr.io/${{ github.repository }}:latest; then
+            if docker pull ghcr.io/${REPO_LOWER}:latest; then
               echo "Image is available!"
               break
             fi
@@ -143,14 +150,15 @@ jobs:
       - name: Generate release notes
         id: release_notes
         run: |
-          cat > release_notes.md << 'EOF'
+          REPO_LOWER=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+          cat > release_notes.md << EOF
           ## Swarm CLI Release ${{ steps.version.outputs.version }}
           
           ### Docker Image
-          ```bash
-          docker pull ghcr.io/${{ github.repository }}:latest
-          docker pull ghcr.io/${{ github.repository }}:${{ steps.version.outputs.version }}
-          ```
+          \`\`\`bash
+          docker pull ghcr.io/${REPO_LOWER}:latest
+          docker pull ghcr.io/${REPO_LOWER}:${{ steps.version.outputs.version }}
+          \`\`\`
           
           ### Installation Options
           
@@ -185,7 +193,7 @@ jobs:
           ```
           
           ### What's Changed
-          - Docker image: `ghcr.io/${{ github.repository }}:${{ steps.version.outputs.version }}`
+          - Docker image: \`ghcr.io/${REPO_LOWER}:${{ steps.version.outputs.version }}\`
           - Built from commit: ${{ github.sha }}
           EOF
 
