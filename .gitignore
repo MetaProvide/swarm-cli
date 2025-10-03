@@ -1,0 +1,14 @@
+# Docker
+*.log
+
+# Build artifacts
+build/
+*.deb
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/

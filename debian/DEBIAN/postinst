@@ -1,0 +1,40 @@
+#!/bin/bash
+
+set -e
+
+# Make sure the swarm-cli script is executable
+chmod +x /usr/bin/swarm-cli
+
+# Check if bundled Docker image exists
+BUNDLED_IMAGE="/usr/share/swarm-cli/swarm-cli-docker-image.tar.gz"
+
+if [ -f "$BUNDLED_IMAGE" ]; then
+  echo "Loading bundled Docker image..."
+  if command -v docker &> /dev/null && docker info &> /dev/null 2>&1; then
+    docker load -i "$BUNDLED_IMAGE" || {
+      echo "Warning: Failed to load bundled image. Will try to pull from registry on first use."
+    }
+    # Remove the bundled image after loading to save disk space
+    rm -f "$BUNDLED_IMAGE"
+    echo "Bundled image loaded and cleaned up successfully."
+  else
+    echo "Docker is not running. The bundled image will be loaded on first use."
+  fi
+else
+  # No bundled image, try to pull from registry
+  if command -v docker &> /dev/null && docker info &> /dev/null 2>&1; then
+    echo "Pulling swarm-cli Docker image from registry..."
+    docker pull ghcr.io/metaprovide/swarm-cli:latest || {
+      echo "Warning: Failed to pull image. It will be pulled on first use."
+    }
+  else
+    echo "Docker is not running. The image will be pulled on first use."
+  fi
+fi
+
+echo ""
+echo "swarm-cli has been installed successfully!"
+echo "Run 'swarm-cli --help' to get started."
+echo ""
+
+exit 0

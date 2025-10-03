@@ -1,0 +1,13 @@
+Package: swarm-cli
+Version: 1.0.0
+Section: utils
+Priority: optional
+Architecture: all
+Depends: docker.io | docker-ce
+Maintainer: MetaProvide <info@metaprovide.org>
+Description: Ethersphere Swarm CLI wrapper using Docker
+ A convenient wrapper for running the Ethersphere Swarm CLI
+ via Docker container without local Node.js installation.
+ .
+ This package provides a swarm-cli command that automatically
+ runs the containerized version from GHCR.
