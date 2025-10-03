@@ -154,9 +154,14 @@ swarm-cli status
 
 ## Available Tags
 
+### Docker Images
 - `latest` - Latest build from the main branch
 - `v*` - Semantic version tags (e.g., `v1.0.0`)
 - `main` - Latest commit on main branch
+
+### Debian Packages
+- **Stable releases**: Tagged versions (e.g., `v1.0.0`) available on the [releases page](https://github.com/metaprovide/swarm-cli/releases)
+- **Development builds**: Available under the `dev-latest` pre-release tag for testing latest changes
 
 ## Building Locally
 
