@@ -103,7 +103,7 @@ This repository uses [Renovate Bot](https://github.com/renovatebot/renovate) for
 4. **Auto-creates release tag** (triggers binary build)
 5. **GitHub Actions builds** and publishes binaries
 
-New binaries are typically available within 3-4 days of upstream release. See [RENOVATE.md](RENOVATE.md) for details.
+New binaries are typically available within 3-4 days of upstream release.
 
 ## License
 
