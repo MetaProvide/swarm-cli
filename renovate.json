@@ -1,0 +1,43 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:base"
+  ],
+  "packageRules": [
+    {
+      "matchPackageNames": ["@ethersphere/swarm-cli"],
+      "groupName": "swarm-cli",
+      "automerge": true,
+      "automergeType": "pr",
+      "automergeStrategy": "squash",
+      "schedule": ["every weekend"],
+      "labels": ["dependencies", "swarm-cli-update", "automerge"],
+      "commitMessagePrefix": "chore(deps):",
+      "commitMessageTopic": "swarm-cli",
+      "commitMessageExtra": "to {{newVersion}}",
+      "prTitle": "Update swarm-cli to {{newVersion}}",
+      "prBodyTemplate": "This PR updates `@ethersphere/swarm-cli` from `{{currentVersion}}` to `{{newVersion}}`.\n\n### Changes\n\n{{{changelog}}}\n\n### Release Notes\n\nSee upstream release notes: https://github.com/ethersphere/swarm-cli/releases/tag/v{{newVersion}}\n\n---\n\n**Auto-merge enabled:** This PR will be automatically merged and a release tag will be created to trigger binary builds.",
+      "semanticCommits": "enabled",
+      "minimumReleaseAge": "3 days"
+    },
+    {
+      "matchDepTypes": ["devDependencies"],
+      "automerge": true,
+      "schedule": ["every weekend"]
+    }
+  ],
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["before 3am on Monday"],
+    "automerge": true
+  },
+  "rangeStrategy": "pin",
+  "pinDigests": false,
+  "separateMajorMinor": true,
+  "separateMinorPatch": false,
+  "prConcurrentLimit": 3,
+  "prCreation": "immediate",
+  "rebaseWhen": "conflicted",
+  "assignees": [],
+  "reviewers": []
+}

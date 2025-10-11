@@ -1,0 +1,21 @@
+{
+  "name": "swarm-cli-standalone",
+  "version": "1.0.0",
+  "description": "Standalone executable builder for Ethersphere Swarm CLI",
+  "private": true,
+  "packageManager": "pnpm@9.0.0",
+  "scripts": {
+    "build": "node build.js",
+    "build:linux": "node build.js linux",
+    "build:macos": "node build.js macos",
+    "build:windows": "node build.js windows",
+    "build:all": "node build.js all",
+    "version-info": "node -e \"console.log('Swarm CLI version:', require('./package.json').dependencies['@ethersphere/swarm-cli'])\""
+  },
+  "dependencies": {
+    "@ethersphere/swarm-cli": "2.36.0"
+  },
+  "devDependencies": {
+    "@yao-pkg/pkg": "^6.8.0"
+  }
+}

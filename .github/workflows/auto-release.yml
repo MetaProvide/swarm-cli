@@ -1,0 +1,60 @@
+name: Auto Release on Dependency Update
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+
+jobs:
+  check-and-release:
+    name: Create Release Tag
+    runs-on: ubuntu-latest
+    # Only run if the commit is from Renovate
+    if: contains(github.event.head_commit.message, 'chore(deps): swarm-cli')
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Get swarm-cli version
+        id: version
+        run: |
+          SWARM_VERSION=$(node -e "console.log(require('./package.json').dependencies['@ethersphere/swarm-cli'])")
+          echo "swarm_version=$SWARM_VERSION" >> $GITHUB_OUTPUT
+          echo "tag_name=v$SWARM_VERSION" >> $GITHUB_OUTPUT
+          echo "Swarm CLI version: $SWARM_VERSION"
+
+      - name: Check if tag exists
+        id: check_tag
+        run: |
+          if git rev-parse "v${{ steps.version.outputs.swarm_version }}" >/dev/null 2>&1; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "Tag v${{ steps.version.outputs.swarm_version }} already exists"
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "Tag v${{ steps.version.outputs.swarm_version }} does not exist"
+          fi
+
+      - name: Create and push tag
+        if: steps.check_tag.outputs.exists == 'false'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -a "v${{ steps.version.outputs.swarm_version }}" -m "Release swarm-cli v${{ steps.version.outputs.swarm_version }}"
+          git push origin "v${{ steps.version.outputs.swarm_version }}"
+          echo "✅ Created and pushed tag v${{ steps.version.outputs.swarm_version }}"
+
+      - name: Tag already exists
+        if: steps.check_tag.outputs.exists == 'true'
+        run: |
+          echo "ℹ️ Tag v${{ steps.version.outputs.swarm_version }} already exists, skipping release creation"

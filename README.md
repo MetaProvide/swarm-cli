@@ -1,234 +1,139 @@
-# Swarm CLI Docker
+# Swarm CLI Standalone
 
-A containerized version of the [Ethersphere Swarm CLI](https://github.com/ethersphere/swarm-cli) for easy, portable usage without local installation.
+Standalone executable distribution of the [Ethersphere Swarm CLI](https://github.com/ethersphere/swarm-cli).
 
-## Installation
+Run swarm-cli on any server without installing Node.js or Docker - just download and execute a single binary.
 
-### Option 1: Debian/Ubuntu Package (Recommended)
+## Features
 
-Download and install the `.deb` package from the [releases page](https://github.com/metaprovide/swarm-cli/releases).
+- ✅ **Zero dependencies** - No Node.js or Docker required
+- ✅ **Single executable** - One file, ~50-80MB
+- ✅ **Cross-platform** - Linux, macOS, Windows
+- ✅ **Version tracking** - Know exactly which swarm-cli version is bundled
+- ✅ **Auto-updates** - Renovate bot monitors for new swarm-cli releases
 
-**Two package variants are available:**
+## Quick Start
 
-**Lightweight (recommended)** - Downloads Docker image on first use:
+### Download
+
+Get the latest binary from the [releases page](https://github.com/metaprovide/swarm-cli/releases):
+
 ```bash
-# Download the lightweight package (~10KB)
-wget https://github.com/metaprovide/swarm-cli/releases/latest/download/swarm-cli_1.0.0_all.deb
+# Linux x64
+wget https://github.com/metaprovide/swarm-cli/releases/latest/download/swarm-cli-linux
+chmod +x swarm-cli-linux
 
-# Install with dependencies
-sudo apt install ./swarm-cli_1.0.0_all.deb
+# macOS (Apple Silicon)
+curl -L -o swarm-cli https://github.com/metaprovide/swarm-cli/releases/latest/download/swarm-cli-macos-arm
+chmod +x swarm-cli
+
+# Windows
+# Download swarm-cli-windows.exe from releases page
 ```
 
-**Self-contained** - Includes bundled Docker image (no internet required):
-```bash
-# Download the self-contained package (~50-100MB)
-wget https://github.com/metaprovide/swarm-cli/releases/latest/download/swarm-cli_1.0.0_all-with-image.deb
-
-# Install with dependencies
-sudo apt install ./swarm-cli_1.0.0_all-with-image.deb
-```
-
-After installation, use `swarm-cli` directly:
+### Install (Optional)
 
 ```bash
+# Linux/macOS - Install system-wide
+sudo mv swarm-cli-linux /usr/local/bin/swarm-cli
+
+# Now run from anywhere
 swarm-cli --help
-swarm-cli status
 ```
 
-**Update the Docker image:**
-```bash
-swarm-cli --update
-```
+### Available Binaries
 
-### Option 2: Direct Docker Usage
-
-Run Swarm CLI commands directly using Docker:
-
-```bash
-docker run --rm -it ghcr.io/metaprovide/swarm-cli:latest --help
-```
+| Platform | Binary Name | Architecture |
+|----------|-------------|--------------|
+| Linux | `swarm-cli-linux` | x64 |
+| Linux | `swarm-cli-linux-arm` | ARM64 |
+| macOS | `swarm-cli-macos` | Intel (x64) |
+| macOS | `swarm-cli-macos-arm` | Apple Silicon (ARM64) |
+| Windows | `swarm-cli-windows.exe` | x64 |
 
 ## Usage
 
-### With Debian Package
+The binary works exactly like the native swarm-cli. All commands and options are supported.
 
-If you installed the `.deb` package, simply use `swarm-cli`:
+### Basic Commands
 
 ```bash
+# Check bundled swarm-cli version
+swarm-cli --bundled-version
+
 # Display help
 swarm-cli --help
+
+# Check Bee node status
+swarm-cli status
 
 # Upload a file
 swarm-cli upload myfile.txt
 
 # Download content
 swarm-cli download <hash> output.txt
-
-# Check status
-swarm-cli status
 ```
 
-The package automatically:
-- Mounts your current directory as `/data` in the container
-- Handles TTY detection for interactive/non-interactive modes
-- Uses `--network=host` for local Swarm node access
-
-### With Direct Docker
-
-#### Basic Commands
-
-Display help:
-```bash
-docker run --rm -it ghcr.io/metaprovide/swarm-cli:latest --help
-```
-
-### Interactive Mode
-
-For interactive commands that require TTY:
-```bash
-docker run --rm -it --network=host ghcr.io/metaprovide/swarm-cli:latest [command] [options]
-```
-
-### Non-Interactive Mode
-
-For scripting or piping output:
-```bash
-docker run --rm --network=host ghcr.io/metaprovide/swarm-cli:latest [command] [options]
-```
-
-### Common Examples
-
-**Upload a file:**
-```bash
-docker run --rm -it \
-  --network=host \
-  -v "$(pwd):/data" \
-  ghcr.io/metaprovide/swarm-cli:latest upload /data/myfile.txt
-```
-
-**Download content:**
-```bash
-docker run --rm -it \
-  --network=host \
-  -v "$(pwd):/data" \
-  ghcr.io/metaprovide/swarm-cli:latest download <hash> /data/output.txt
-```
-
-**Check status:**
-```bash
-docker run --rm -it \
-  --network=host \
-  ghcr.io/metaprovide/swarm-cli:latest status
-```
-
-## Volume Mounting
-
-To access local files, mount your working directory:
+### Postage Stamps
 
 ```bash
-docker run --rm -it \
-  -v "$(pwd):/data" \
-  --network=host \
-  ghcr.io/metaprovide/swarm-cli:latest upload /data/yourfile.txt
+# List stamps
+swarm-cli stamp list
+
+# Create a new stamp
+swarm-cli stamp buy --amount 10000000 --depth 20
+
+# Show stamp details
+swarm-cli stamp show <stamp-id>
 ```
 
-## Network Mode
-
-The `--network=host` flag is used to allow the container to access your local Swarm node. If your Swarm node is running on a different network or you need custom networking, adjust accordingly.
-
-## Creating an Alias
-
-For convenience, create a shell alias:
-
-**Bash/Zsh:**
-```bash
-echo 'alias swarm-cli="docker run --rm -it --network=host ghcr.io/metaprovide/swarm-cli:latest"' >> ~/.bashrc
-source ~/.bashrc
-```
-
-Then use it like a native command:
-```bash
-swarm-cli --help
-swarm-cli status
-```
-
-## Available Tags
-
-### Docker Images
-- `latest` - Latest build from the main branch
-- `v*` - Semantic version tags (e.g., `v1.0.0`)
-- `main` - Latest commit on main branch
-
-### Debian Packages
-- **Stable releases**: Tagged versions (e.g., `v1.0.0`) available on the [releases page](https://github.com/metaprovide/swarm-cli/releases)
-- **Development builds**: Available under the `dev-latest` pre-release tag for testing latest changes
-
-## Building Locally
-
-### Build the Docker Image
-
-To build the image yourself:
+### Feeds
 
 ```bash
-docker build -t swarm-cli:latest .
+# Create a feed
+swarm-cli feed create --topic mytopic
+
+# Upload to feed
+swarm-cli feed upload --topic mytopic myfile.txt
 ```
 
-Then run with:
+For complete documentation, see the [official swarm-cli docs](https://github.com/ethersphere/swarm-cli).
+
+## Building from Source
+
+Want to build the binaries yourself? See [BUILD_INSTRUCTIONS.md](BUILD_INSTRUCTIONS.md) for:
+- Build requirements
+- Build commands
+- CI/CD pipeline details
+- Version management
+- Release process
+
+Quick build:
 ```bash
-docker run --rm -it --network=host swarm-cli:latest --help
+pnpm install
+make build-standalone-all
 ```
 
-### Build the Debian Package
+## How It Works
 
-**Option 1: Build without bundled Docker image (smaller package):**
+This project uses [@yao-pkg/pkg](https://github.com/yao-pkg/pkg) to bundle:
+- Node.js runtime (v22)
+- @ethersphere/swarm-cli package
+- All dependencies
 
-```bash
-make build
-```
+Into a single executable file. The result is a ~50-80MB binary that runs anywhere without requiring Node.js or Docker.
 
-This creates a lightweight package that pulls the Docker image from GHCR on first use.
+## Automatic Updates
 
-**Option 2: Build with bundled Docker image (larger package, no internet required):**
+This repository uses [Renovate Bot](https://github.com/renovatebot/renovate) for fully automated updates:
 
-```bash
-make build-with-image
-```
+1. **Renovate detects** new swarm-cli version (checks every weekend)
+2. **Creates PR** with version update
+3. **Auto-merges** after 3 days (safety period)
+4. **Auto-creates release tag** (triggers binary build)
+5. **GitHub Actions builds** and publishes binaries
 
-This bundles the Docker image inside the `.deb` package (~50-100MB larger), so users don't need internet access to install. The bundled image is automatically loaded during installation and then removed to save disk space.
-
-**Install the package:**
-
-```bash
-make install
-```
-
-Or manually:
-```bash
-sudo apt install ./swarm-cli_1.0.0_all.deb
-```
-
-**Other available make targets:**
-```bash
-make help              # Show all available commands
-make build             # Build package without Docker image
-make build-with-image  # Build package with bundled Docker image
-make clean             # Clean build artifacts
-make uninstall         # Remove the package
-```
-
-## GitHub Container Registry
-
-Images are automatically built and published to GitHub Container Registry (GHCR) on every push to the main branch and on version tags.
-
-Pull the latest image:
-```bash
-docker pull ghcr.io/metaprovide/swarm-cli:latest
-```
-
-## Requirements
-
-- Docker installed and running
-- Access to a Swarm node (local or remote)
+New binaries are typically available within 3-4 days of upstream release. See [RENOVATE.md](RENOVATE.md) for details.
 
 ## License
 

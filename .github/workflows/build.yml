@@ -1,0 +1,128 @@
+name: Build Binaries
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build Binaries
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build binaries for all platforms
+        run: npm run build:all
+
+      - name: List built binaries
+        run: |
+          echo "Built binaries:"
+          ls -lh build/
+          echo ""
+          echo "Version info:"
+          cat build/VERSION.txt
+
+      - name: Upload Linux x64 binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: swarm-cli-linux
+          path: build/swarm-cli-linux
+
+      - name: Upload Linux ARM64 binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: swarm-cli-linux-arm
+          path: build/swarm-cli-linux-arm
+
+      - name: Upload macOS x64 binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: swarm-cli-macos
+          path: build/swarm-cli-macos
+
+      - name: Upload macOS ARM64 binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: swarm-cli-macos-arm
+          path: build/swarm-cli-macos-arm
+
+      - name: Upload Windows binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: swarm-cli-windows
+          path: build/swarm-cli-windows.exe
+
+      - name: Read version info
+        if: startsWith(github.ref, 'refs/tags/')
+        id: version
+        run: |
+          echo "version_info<<EOF" >> $GITHUB_OUTPUT
+          cat build/VERSION.txt >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            build/swarm-cli-linux
+            build/swarm-cli-linux-arm
+            build/swarm-cli-macos
+            build/swarm-cli-macos-arm
+            build/swarm-cli-windows.exe
+            build/VERSION.txt
+            build/VERSION.json
+          body: |
+            ## Standalone Binaries
+
+            Download the appropriate binary for your platform:
+
+            - **Linux x64**: `swarm-cli-linux`
+            - **Linux ARM64**: `swarm-cli-linux-arm`
+            - **macOS x64**: `swarm-cli-macos`
+            - **macOS ARM64** (Apple Silicon): `swarm-cli-macos-arm`
+            - **Windows x64**: `swarm-cli-windows.exe`
+
+            ### Quick Start
+
+            ```bash
+            # Download (replace with your platform)
+            wget https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/swarm-cli-linux
+
+            # Make executable
+            chmod +x swarm-cli-linux
+
+            # Check bundled version
+            ./swarm-cli-linux --bundled-version
+
+            # Run
+            ./swarm-cli-linux --help
+            ```
+
+            ### Build Information
+
+            ```
+            ${{ steps.version.outputs.version_info }}
+            ```
+
+            These are standalone executables that require **no Node.js or Docker installation**.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

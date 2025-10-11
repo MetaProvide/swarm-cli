@@ -1,0 +1,30 @@
+{
+  "name": "swarm-cli",
+  "version": "1.0.0",
+  "bin": "entry.js",
+  "pkg": {
+    "assets": [
+      "node_modules/@ethersphere/**/*",
+      "node_modules/@ethereumjs/**/*",
+      "node_modules/cafe-utility/**/*",
+      "node_modules/chalk/**/*",
+      "node_modules/cli-progress/**/*",
+      "node_modules/ethers/**/*",
+      "node_modules/furious-commander/**/*",
+      "node_modules/inquirer/**/*",
+      "node_modules/node-fetch/**/*",
+      "node_modules/ora/**/*",
+      "node_modules/ws/**/*"
+    ],
+    "scripts": [
+      "node_modules/@ethersphere/**/*.js",
+      "node_modules/@ethereumjs/**/*.js",
+      "node_modules/cafe-utility/**/*.js",
+      "node_modules/furious-commander/**/*.js",
+      "node_modules/inquirer/**/*.js",
+      "entry.js"
+    ],
+    "targets": [],
+    "outputPath": "build"
+  }
+}
