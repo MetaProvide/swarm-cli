@@ -68,7 +68,7 @@ For complete swarm-cli documentation and all available commands, see the [offici
 
 ## Building from Source
 
-Want to build the binaries yourself? See [BUILD_INSTRUCTIONS.md](BUILD_INSTRUCTIONS.md) for:
+Want to build the binaries yourself? See [BUILD.md](BUILD.md) for:
 
 - Build requirements
 - Build commands
