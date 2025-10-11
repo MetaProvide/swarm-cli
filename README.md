@@ -20,22 +20,22 @@ Get the latest binary from the [releases page](https://github.com/metaprovide/sw
 
 ```bash
 # Linux x64
-wget https://github.com/metaprovide/swarm-cli/releases/latest/download/swarm-cli-linux
-chmod +x swarm-cli-linux
+wget -O swarm-cli https://github.com/metaprovide/swarm-cli/releases/latest/download/swarm-cli-linux
+chmod +x swarm-cli
 
 # macOS (Apple Silicon)
 curl -L -o swarm-cli https://github.com/metaprovide/swarm-cli/releases/latest/download/swarm-cli-macos-arm
 chmod +x swarm-cli
 
 # Windows
-# Download swarm-cli-windows.exe from releases page
+# Download swarm-cli-windows.exe from releases page and rename to swarm-cli.exe
 ```
 
 ### Install (Optional)
 
 ```bash
 # Linux/macOS - Install system-wide
-sudo mv swarm-cli-linux /usr/local/bin/swarm-cli
+sudo mv swarm-cli /usr/local/bin/swarm-cli
 
 # Now run from anywhere
 swarm-cli --help
@@ -43,65 +43,33 @@ swarm-cli --help
 
 ### Available Binaries
 
-| Platform | Binary Name | Architecture |
-|----------|-------------|--------------|
-| Linux | `swarm-cli-linux` | x64 |
-| Linux | `swarm-cli-linux-arm` | ARM64 |
-| macOS | `swarm-cli-macos` | Intel (x64) |
-| macOS | `swarm-cli-macos-arm` | Apple Silicon (ARM64) |
-| Windows | `swarm-cli-windows.exe` | x64 |
+| Platform | Binary Name             | Architecture          |
+| -------- | ----------------------- | --------------------- |
+| Linux    | `swarm-cli-linux`       | x64                   |
+| Linux    | `swarm-cli-linux-arm`   | ARM64                 |
+| macOS    | `swarm-cli-macos`       | Intel (x64)           |
+| macOS    | `swarm-cli-macos-arm`   | Apple Silicon (ARM64) |
+| Windows  | `swarm-cli-windows.exe` | x64                   |
 
 ## Usage
 
-The binary works exactly like the native swarm-cli. All commands and options are supported.
-
-### Basic Commands
+The binary works exactly like the native swarm-cli. All commands and options are fully supported.
 
 ```bash
-# Check bundled swarm-cli version
-swarm-cli --bundled-version
+# Check bundled version
+./swarm-cli --bundled-version
 
-# Display help
-swarm-cli --help
-
-# Check Bee node status
-swarm-cli status
-
-# Upload a file
-swarm-cli upload myfile.txt
-
-# Download content
-swarm-cli download <hash> output.txt
+# Use it like regular swarm-cli
+./swarm-cli --help
+./swarm-cli status
 ```
 
-### Postage Stamps
-
-```bash
-# List stamps
-swarm-cli stamp list
-
-# Create a new stamp
-swarm-cli stamp buy --amount 10000000 --depth 20
-
-# Show stamp details
-swarm-cli stamp show <stamp-id>
-```
-
-### Feeds
-
-```bash
-# Create a feed
-swarm-cli feed create --topic mytopic
-
-# Upload to feed
-swarm-cli feed upload --topic mytopic myfile.txt
-```
-
-For complete documentation, see the [official swarm-cli docs](https://github.com/ethersphere/swarm-cli).
+For complete swarm-cli documentation and all available commands, see the [official swarm-cli repository](https://github.com/ethersphere/swarm-cli).
 
 ## Building from Source
 
 Want to build the binaries yourself? See [BUILD_INSTRUCTIONS.md](BUILD_INSTRUCTIONS.md) for:
+
 - Build requirements
 - Build commands
 - CI/CD pipeline details
@@ -109,14 +77,16 @@ Want to build the binaries yourself? See [BUILD_INSTRUCTIONS.md](BUILD_INSTRUCTI
 - Release process
 
 Quick build:
+
 ```bash
 pnpm install
-make build-standalone-all
+make build-all
 ```
 
 ## How It Works
 
 This project uses [@yao-pkg/pkg](https://github.com/yao-pkg/pkg) to bundle:
+
 - Node.js runtime (v22)
 - @ethersphere/swarm-cli package
 - All dependencies
