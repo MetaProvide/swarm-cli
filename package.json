@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Standalone executable builder for Ethersphere Swarm CLI",
   "private": true,
-  "packageManager": "pnpm@9.0.0",
+  "packageManager": "pnpm@9.15.9",
   "scripts": {
     "build": "node build.js",
     "build:linux": "node build.js linux",
