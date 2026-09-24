@@ -16,6 +16,6 @@
     "@ethersphere/swarm-cli": "2.36.1"
   },
   "devDependencies": {
-    "@yao-pkg/pkg": "^6.8.0"
+    "@yao-pkg/pkg": "6.8.0"
   }
 }
